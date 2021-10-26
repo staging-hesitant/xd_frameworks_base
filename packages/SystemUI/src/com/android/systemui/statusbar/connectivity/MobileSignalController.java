@@ -565,7 +565,8 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
                 mSubscriptionInfo.getSubscriptionId(),
                 mCurrentState.roaming,
                 sbInfo.showTriangle,
-                volteId);
+                volteId,
+                mCurrentState.isDefault);
         callback.setMobileDataIndicators(mobileDataIndicators);
     }
 
@@ -577,10 +578,6 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
         boolean pm = mProviderModelSetting || mProviderModelBehavior;
         if (mCurrentState.dataSim) {
             // If using provider model behavior, only show QS icons if the state is also default
-            if (pm && !mCurrentState.isDefault) {
-                return new QsInfo(qsTypeIcon, qsIcon, qsDescription);
-            }
-
             if (mCurrentState.showQuickSettingsRatIcon() || mConfig.alwaysShowDataRatIcon) {
                 qsTypeIcon = dataTypeIcon;
             }
@@ -604,7 +601,7 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
 
         if (mProviderModelBehavior) {
             boolean showDataIconStatusBar = (mCurrentState.dataConnected || dataDisabled)
-                    && (mCurrentState.dataSim && mCurrentState.isDefault);
+                    && mCurrentState.dataSim;
             typeIcon =
                     (showDataIconStatusBar || mConfig.alwaysShowDataRatIcon) ? dataTypeIcon : 0;
             showDataIconStatusBar |= mCurrentState.roaming;
